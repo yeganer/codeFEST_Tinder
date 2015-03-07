@@ -5,28 +5,32 @@ import math
 
 class TrackData:
     def __init__(self,data=None):
-        self.v_max=0;
-        self.v_avg=0;
-        self.v_var=0;
-        self.p_limit=0;
-        self.p_distance=0;
-        self.p_belt=0;
-        self.curves=0;
+        #self.v_max=0;
+        #self.v_avg=0;
+        #self.v_var=0;
+        #self.p_limit=0;
+        #self.p_distance=0;
+        #self.p_belt=0;
+        #self.curves=0;
+        #self.acc=0;
+        #self.score=0;
+        #self.duration=0
         self.finish=False;
-        self.acc=0;
-        self.score=0;
         self.data=list()
-        self.duration=0
+        self.error=False
         if data:
             for i in xrange(len(data)):
                 self.add_datapoint(data[i])
 
     def end_track(self):
+        self.update()
         self.finish=True;
 
     def add_data_point(self,data):
         if self.finish:
             return False
+        if not data.stwa:
+            data.stwa=0
         if data.speed:
             self.data.append(data)
         #self.update()
@@ -50,22 +54,33 @@ class TrackData:
             self.score=np.mean([self.score, math.exp(-self.v_var)])
             times = [x.time for x in self.data]
             self.duration=np.max(times) - np.min(times)
+            #print len(self.data)
+            self.max_angle=np.max([np.abs(x.stwa) for x in self.data])
+            #print self.max_angle
+            self.max_force=np.max([np.abs(x.stwa)*x.speed**2 for x in self.data])
             #print(avg_speed)
+        else:
+            self.error=True
     
-    def export(self, path):
+    def export(self):
+        if not self.error:
         #'''creates a file with the track data'''
         #print(self.v_avg)
         #print(self.v_max)
         #print(self.v_var)
         #print(self.p_limit)
-        return {'v_avg':self.v_avg,
-                'v_var':self.v_var,
-                'v_max':self.v_max,
-                'limit':self.p_limit,
-                'acc':self.acc,
-                'score':self.score,
-                'dist':self.p_distance,
-                'duration':self.duration,
-                'belt':self.p_belt,}
+            return {'v_avg':self.v_avg,
+                    'v_var':self.v_var,
+                    'v_max':self.v_max,
+                    'limit':self.p_limit,
+                    'acc':self.acc,
+                    'score':self.score,
+                    'dist':self.p_distance,
+                    'duration':self.duration,
+                    'angle':self.max_angle,
+                    'force':self.max_force,
+                    'belt':self.p_belt,}
+        else:
+            return None
 
 
