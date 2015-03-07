@@ -91,5 +91,5 @@ for x in db.fetch():
         tracks.append(TrackData())
     tracks[-1].add_data_point(ContData(x))
     last_time=x['time']
-    if len(tracks) >10:
+    if len(tracks) >100:
         break
