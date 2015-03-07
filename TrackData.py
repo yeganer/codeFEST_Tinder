@@ -40,14 +40,12 @@ class TrackData:
         if len(self.data)>2:
             #mspeed,avg
             #for k,v in self.data.items():
-            #speed = 
             l_speed = [x.speed for x in self.data]
             self.v_avg = np.mean(l_speed)
             self.v_max = np.max(l_speed)
             self.v_var = np.std(l_speed)
             self.acc = np.mean([np.abs(l_speed[i] - l_speed[i+1]) for i in xrange(len(l_speed)-1)])
             self.p_limit = 1-np.mean([1 if x.speed>x.speed_lim else 0 for x in self.data])
-            self.p_belt = np.mean([1 if x.belt else 0 for x in self.data])
             self.p_sleep = 1-np.mean([1 if x.ftgs else 0 for x in self.data])
             self.p_distance = np.mean([1 if x.vehicle_dist>x.speed/2. else 0 for x in self.data])
             times = [x.time for x in self.data]
@@ -57,6 +55,15 @@ class TrackData:
             #print self.max_angle
             self.max_force=np.max([np.abs(x.stwa*x.speed**2) for x in self.data])
             #print(avg_speed)
+            l_tmp_belt = [[int(digit) for digit in bin(int(x.belt))[2:]] for x in self.data if x.belt != None] 
+            l_belt = [[0]*(18-len(tmp_belt))+tmp_belt for tmp_belt in l_tmp_belt]
+            if l_belt:
+                l_driver_belt = [belt[-2] for belt in l_belt]
+                seats = max([len([x for x in belt[1::2] if x%2]) for belt in l_belt])
+                belted = [len([t for t in zip(belt,belt[1:])[0::2] if t[0] and t[1]]) for belt in l_belt]
+                self.p_belt = np.mean(l_driver_belt)
+            else:
+                self.p_belt = -1
             self.calc_score()
         else:
             self.error=True
