@@ -57,7 +57,7 @@ class TrackData:
             #print len(self.data)
             self.max_angle=np.max([np.abs(x.stwa) for x in self.data])
             #print self.max_angle
-            self.max_force=np.max([np.abs(x.stwa)*x.speed**2 for x in self.data])
+            self.max_force=np.max([np.abs(x.stwa*x.speed**2) for x in self.data])
             #print(avg_speed)
         else:
             self.error=True

@@ -20,6 +20,7 @@ db = DBLink(conf)
 query = "SELECT speed, speed_GPS, brlt, belt, stwa, ftgs, Node_Time from hackathon WHERE Track_VehicleID='{id}' ORDER BY NODE_TIME"# LIMIT {limit};"
 db.query(query.format(id=101, limit=10))
 last_time=None
+max_force=None
 tracks = []
 tracks.append(TrackData())
 for x in db.fetch():
@@ -33,10 +34,16 @@ for x in db.fetch():
         tracks[-1].end_track()
         result = tracks[-1].export()
         if result:
-            print result['force']
+            if not max_force:
+                max_force =0
+            if result['force']>max_force:
+                print(len(tracks))
+                max_force=result['force']
+            print result
         #print len(tracks)
         tracks.append(TrackData())
     tracks[-1].add_data_point(ContData(x))
     last_time=x['time']
-    if len(tracks) >43 and False:
+    if len(tracks) >26 and True:
         break
+print max_force
