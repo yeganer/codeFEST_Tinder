@@ -2,68 +2,12 @@
 import numpy as np
 from random import random
 
-from ContData import ContData
+from ContData import *
 from TrackData import TrackData
 from mysql import DBLink
 
 import time as t
 
-
-data=[{
-        'speed' : 30.,
-        'stwa' : 100.,
-        'ftgs' : 100.,
-        'gspeed' : 100.,
-        'avg_speed' : 100.,
-        'max_speed' : 100.,
-        'time' : 100.,
-        'speed_var' : 100.,
-        'distance' : 100.,
-        'speed_lim' : 100.,
-        'belt' : True,
-        'crash' : False,
-        'brake' : False,
-        'sleepines' : False,
-        'curve' : False,
-        },{
-        'speed' : 150.,
-        'stwa' : 100.,
-        'ftgs' : 100.,
-        'gspeed' : 100.,
-        'avg_speed' : 100.,
-        'max_speed' : 100.,
-        'time' : 100.,
-        'speed_var' : 100.,
-        'distance' : 100.,
-        'speed_lim' : 100.,
-        'belt' : True,
-        'crash' : False,
-        'brake' : False,
-            'sleepines' : False,
-            'curve' : False,
-            },{
-            'speed' : 100.,
-            'stwa' : 100.,
-            'ftgs' : 100.,
-            'gspeed' : 100.,
-            'avg_speed' : 100.,
-            'max_speed' : 100.,
-            'time' : 100.,
-            'speed_var' : 100.,
-            'distance' : 100.,
-        'speed_lim' : 100.,
-        'belt' : True,
-        'crash' : False,
-        'brake' : False,
-        'sleepines' : False,
-        'curve' : False,
-        }]
-#
-#a=list()
-#for i in xrange(len(data)):
-#    a.append(ContData(data[i]))
-#b = TrackData(a)
-#print b.export('')
 
 conf = {
         'ip': '138.246.40.44',
@@ -76,6 +20,7 @@ db = DBLink(conf)
 query = "SELECT speed, speed_GPS, brlt, belt, stwa, ftgs, Node_Time from hackathon WHERE Track_VehicleID='{id}' ORDER BY NODE_TIME"# LIMIT {limit};"
 db.query(query.format(id=101, limit=10))
 last_time=None
+max_force=None
 tracks = []
 tracks.append(TrackData())
 for x in db.fetch():
@@ -86,10 +31,22 @@ for x in db.fetch():
     if not last_time:
         last_time=x['time']
     if np.abs(x['time']-last_time) > 1800:
-        tracks[-1].update()
-        print tracks[-1].export('')
+        tracks[-1].end_track()
+        result = tracks[-1].export()
+        if result:
+            if not max_force:
+                max_force =0
+            if result['force']>max_force:
+                print(len(tracks))
+                max_force=result['force']
+            #print result
+        #print len(tracks)
         tracks.append(TrackData())
-    tracks[-1].add_data_point(ContData(x))
+    try:
+        tracks[-1].add_data_point(ContData(x))
+    except InvalidDataException as e:
+        print 'InvalidDataException: ', e.value, " Number: ", e.count
     last_time=x['time']
-    if len(tracks) >100:
+    if len(tracks) >26 and False:
         break
+#print max_force
