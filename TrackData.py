@@ -54,8 +54,10 @@ class TrackData:
             self.max_angle=np.max([np.abs(x.stwa) for x in self.data])
             #print self.max_angle
             self.max_force=np.max([np.abs(x.stwa*x.speed**2) for x in self.data])
-            #print(avg_speed)
-            l_tmp_belt = [[int(digit) for digit in bin(int(x.belt))[2:]] for x in self.data if x.belt != None] 
+            self.force_avg=np.mean([np.abs(x.stwa*x.speed**2) for x in self.data])
+            self.force_var=np.std([np.abs(x.stwa*x.speed**2) for x in self.data])
+            #print(avg_speed=)
+            l_tmp_belt = [[int(digit) for digit in bin(int(x.belt))[2:]] for x in self.data if x.belt is not None]
             l_belt = [[0]*(18-len(tmp_belt))+tmp_belt for tmp_belt in l_tmp_belt]
             if l_belt:
                 l_driver_belt = [belt[-2] for belt in l_belt]
@@ -68,8 +70,9 @@ class TrackData:
         else:
             self.error=True
     def calc_score(self):
-        self.score=np.mean([self.p_limit, self.p_belt, self.p_distance])
-        self.score=np.mean([self.score, math.exp(-self.v_var)])
+        self.score=np.mean([self.p_limit, self.p_distance])
+        self.score=np.mean([self.score, math.exp(-(self.v_avg)/self.v_var)])
+        self.score=math.exp(-(self.v_max-self.v_avg)/(self.v_var*2))
 
     def export(self):
         if not self.error:
@@ -82,7 +85,9 @@ class TrackData:
                     'dist':self.p_distance,
                     'duration':self.duration,
                     'angle':self.max_angle,
-                    'force':self.max_force,
+                    'max_force':self.max_force,
+                    'avg_force':self.force_avg,
+                    'var_force':self.force_var,
                     'belt':self.p_belt,}
         else:
             return None

@@ -37,10 +37,11 @@ for x in db.fetch():
         if result:
             if not max_force:
                 max_force =0
-            if result['force']>max_force:
-                print(len(tracks))
-                max_force=result['force']
-            #print result
+            if result['max_force']>max_force:
+                #print(len(tracks))
+                max_force=result['max_force']
+            #print result['max_force'], ' ', result['avg_force'], ' ', result['var_force']
+            print result['score']
         #print len(tracks)
         tracks.append(TrackData())
     try:
@@ -49,6 +50,6 @@ for x in db.fetch():
         if debug:
             print 'InvalidDataException: ', e.value, " Number: ", e.count
     last_time=x['time']
-    if len(tracks) >26 and False:
+    if len(tracks) >20 and False:
         break
 #print max_force
