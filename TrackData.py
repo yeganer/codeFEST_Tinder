@@ -50,8 +50,6 @@ class TrackData:
             self.p_belt = np.mean([1 if x.belt else 0 for x in self.data])
             self.p_sleep = 1-np.mean([1 if x.ftgs else 0 for x in self.data])
             self.p_distance = np.mean([1 if x.vehicle_dist>x.speed/2. else 0 for x in self.data])
-            self.score=np.mean([self.p_limit, self.p_belt, self.p_distance])
-            self.score=np.mean([self.score, math.exp(-self.v_var)])
             times = [x.time for x in self.data]
             self.duration=np.max(times) - np.min(times)
             #print len(self.data)
@@ -59,16 +57,15 @@ class TrackData:
             #print self.max_angle
             self.max_force=np.max([np.abs(x.stwa*x.speed**2) for x in self.data])
             #print(avg_speed)
+            self.calc_score()
         else:
             self.error=True
-    
+    def calc_score(self):
+        self.score=np.mean([self.p_limit, self.p_belt, self.p_distance])
+        self.score=np.mean([self.score, math.exp(-self.v_var)])
+
     def export(self):
         if not self.error:
-        #'''creates a file with the track data'''
-        #print(self.v_avg)
-        #print(self.v_max)
-        #print(self.v_var)
-        #print(self.p_limit)
             return {'v_avg':self.v_avg,
                     'v_var':self.v_var,
                     'v_max':self.v_max,
