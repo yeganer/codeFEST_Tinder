@@ -10,7 +10,3 @@ class ContData:
         self.ftgs=data['ftgs'];
         self.lspeed=random()*100.+30
 
-    def get_curve(self):
-        return self.stwa*1./self.speed
-
-
