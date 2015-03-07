@@ -8,6 +8,7 @@ from mysql import DBLink
 
 import time as t
 
+debug=False
 
 conf = {
         'ip': '138.246.40.44',
@@ -45,7 +46,8 @@ for x in db.fetch():
     try:
         tracks[-1].add_data_point(ContData(x))
     except InvalidDataException as e:
-        print 'InvalidDataException: ', e.value, " Number: ", e.count
+        if debug:
+            print 'InvalidDataException: ', e.value, " Number: ", e.count
     last_time=x['time']
     if len(tracks) >26 and False:
         break
