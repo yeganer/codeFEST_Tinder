@@ -11,4 +11,3 @@ class ContData:
         self.ftgs=data['ftgs'];
         self.speed_lim=data['speed_lim'];
         self.vehicle_dist=['vehicle_dist'];
-        

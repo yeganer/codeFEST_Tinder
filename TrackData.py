@@ -35,6 +35,7 @@ class TrackData:
         self.acc = [np.abs(l_speed[i] - l_speed[i+1]) for i in xrange(len(l_speed)-1)]
         self.p_limit = np.mean([1 if x.speed>x.speed_lim else 0 for x in self.data])
         self.p_belt = np.mean([1 if x.belt else 0 for x in self.data])
+        self.p_distance = np.mean([1 if x.vehicle_dist>x.speed/2. else 0 for x in self.data])
         #print(avg_speed)
 
     def export(self, path):
@@ -49,6 +50,7 @@ class TrackData:
                 'limit':self.p_limit,
                 'acc':self.acc,
                 'score':self.score,
+                'dist':self.p_distance,
                 'belt':self.p_belt,}
 
 
