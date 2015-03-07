@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import numpy as np
+
 class TrackData:
     def __init__(self,data):
         self.f_end=0;
@@ -25,11 +27,18 @@ class TrackData:
         #mspeed,avg
         #for k,v in self.data.items():
         #speed = 
-        avg_speed = np.mean([x.speed for x in self.data])
-        print(avg_speed)
+        l_speed = [x.speed for x in self.data]
+        self.v_avg = np.mean(l_speed)
+        self.v_max = np.max(l_speed)
+        self.v_var = np.var(l_speed)
+        #print(avg_speed)
 
     def export(self, path):
         #'''creates a file with the track data'''
+        print(self.v_avg)
+        print(self.v_max)
+        print(self.v_var)
+        print(self.v_avg)
         return
 
 
