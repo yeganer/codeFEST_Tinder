@@ -8,5 +8,6 @@ class ContData:
         self.brake=data['brake'];
         self.stwa=data['stwa'];
         self.ftgs=data['ftgs'];
-        self.lspeed=random()*100.+30
-
+        self.speed_lim=data['speed_lim'];
+        self.vehicle_dist=['vehicle_dist'];
+        
