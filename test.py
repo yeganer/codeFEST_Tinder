@@ -2,7 +2,7 @@
 import numpy as np
 from random import random
 
-from ContData import ContData
+from ContData import *
 from TrackData import TrackData
 from mysql import DBLink
 
@@ -39,11 +39,14 @@ for x in db.fetch():
             if result['force']>max_force:
                 print(len(tracks))
                 max_force=result['force']
-            print result
+            #print result
         #print len(tracks)
         tracks.append(TrackData())
-    tracks[-1].add_data_point(ContData(x))
+    try:
+        tracks[-1].add_data_point(ContData(x))
+    except InvalidDataException as e:
+        print 'InvalidDataException: ', e.value, " Number: ", e.count
     last_time=x['time']
-    if len(tracks) >26 and True:
+    if len(tracks) >26 and False:
         break
-print max_force
+#print max_force
