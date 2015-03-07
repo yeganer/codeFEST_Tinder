@@ -6,6 +6,7 @@ class ContData:
         self.speed=data['speed'];
         self.gspeed=data['gspeed'];
         self.brake=data['brake'];
+        self.belt=data['belt'];
         self.stwa=data['stwa'];
         self.ftgs=data['ftgs'];
         self.lspeed=random()*100.+30
