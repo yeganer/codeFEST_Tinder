@@ -33,7 +33,7 @@ class TrackData:
         self.v_max = np.max(l_speed)
         self.v_var = np.var(l_speed)
         self.acc = [np.abs(l_speed[i] - l_speed[i+1]) for i in xrange(len(l_speed)-1)]
-        self.p_limit = np.mean([1 if x.speed>x.lspeed else 0 for x in self.data])
+        self.p_limit = np.mean([1 if x.speed>x.speed_lim else 0 for x in self.data])
         self.p_belt = np.mean([1 if x.belt else 0 for x in self.data])
         #print(avg_speed)
 
