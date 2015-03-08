@@ -22,18 +22,18 @@ for k,v in data.items():
         start = track["time"]["start"];
         end = track["time"]["end"];
         id = k;
-        start = time.localtime(start);
-        end = time.localtime(end);
-        start = time.strftime(start,"%Y-%m-%d %H:%M:%S")
-        end = time.strftime(end,"%Y-%m-%d %H:%M:%S")
+        print start, end, id
+        q_start = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(start))
+        q_end = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(end))
 
-        query = "SELECT speed, Speed_GPS, stwa from hackathon where Node_Time > {start} AND Node_Time < {end} AND Track_VehicleID = {id}";
-        db.query(query.format(start=start, end=end, id=id))
+        query = "SELECT speed, speed_GPS, stwa from hackathon where Node_Time > '{start}' AND Node_Time < '{end}' AND Track_VehicleID = '{id}'";
+        db.query(query.format(start=q_start, end=q_end, id=id))
         with open(str.format("../out/data_{}_{}.dat", id, start), "w") as f:
             for x in db.fetch():
                 if (x['speed_GPS'] is not None or x['speed'] is not None) and x['stwa'] is not None:
                     speed = x['speed_GPS'] or x['speed'] or 0;
                     stwa = x['stwa'] or 0;
+                    print speed, stwa
                 f.write(str(speed) + '\t' + str(stwa) + '\n')
             f.write('\n\n\n')
                 

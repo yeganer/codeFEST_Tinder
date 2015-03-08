@@ -56,7 +56,7 @@ for i in list_ID:
         if np.abs(x['time']-last_time) > 1800 and len(tracks[-1].data)>1:
             tracks[-1].end_track()
             result = tracks[-1].export()
-            if result and result['force']['max']>400000:
+            if result:# and result['force']['max']<200000 and result['duration']>10000:
                 meta[i].append(result)
             tracks.append(TrackData())
         try:
