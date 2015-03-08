@@ -76,18 +76,14 @@ class TrackData:
 
     def export(self):
         if not self.error:
-            return {'v_avg':self.v_avg,
-                    'v_var':self.v_var,
-                    'v_max':self.v_max,
+            return {'v': (self.v_avg, self.v_var, self.v_max),
                     'limit':self.p_limit,
                     'acc':self.acc,
                     'score':self.score,
                     'dist':self.p_distance,
                     'duration':self.duration,
                     'angle':self.max_angle,
-                    'max_force':self.max_force,
-                    'avg_force':self.force_avg,
-                    'var_force':self.force_var,
+                    'force':(self.force_avg, self.force_var, self.max_force ),
                     'belt':self.p_belt,}
         else:
             return None
