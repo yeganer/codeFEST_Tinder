@@ -13,7 +13,7 @@ from mysql import DBLink
 
 debug=False
 
-list_ID = [101,102,103,104,105,106,107,108]
+list_ID = [101]#,102,103,104,105,106,107,108]
 
 conf = {
         'ip': '138.246.40.44',
@@ -49,6 +49,10 @@ for i in list_ID:
         x['speed_lim'] = prev_speed_lim;
         x['vehicle_dist']=randint(1,50);
         x['time'] = t.mktime(t.strptime(x["Node_Time"],"%Y-%m-%d %H:%M:%S"))
+        if randint(1,100) == 23:
+            x['ftgs'] = True
+        else:
+            x['ftgs'] = False
         #print time
         if not last_time:
             last_time=x['time']
@@ -75,7 +79,6 @@ for i in list_ID:
         if len(tracks) >1 and True:
             break
     #print max_force
-
 
 with open("out.json","w") as f:
     json.dump(meta, f)
