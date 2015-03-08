@@ -36,7 +36,6 @@ for i in list_ID:
         x['speed_lim']=200;
         x['vehicle_dist']=200;
         x['time'] = t.mktime(t.strptime(x["Node_Time"],"%Y-%m-%d %H:%M:%S"))
-        #print time
         if not last_time:
             last_time=x['time']
         if np.abs(x['time']-last_time) > 1800 and len(tracks[-1].data)>1:
@@ -46,12 +45,8 @@ for i in list_ID:
                 meta[i].append(result)
                 if not max_force:
                     max_force =0
-                if result['force'][2]>max_force:
-                    #print(len(tracks))
-                    max_force=result['force'][2]
-                #print result['max_force'], ' ', result['avg_force'], ' ', result['var_force']
-                #print result['score']
-            #print len(tracks)
+                if result['force']['max']>max_force:
+                    max_force=result['force']['max']
             tracks.append(TrackData())
         try:
             tracks[-1].add_data_point(ContData(x))
@@ -59,10 +54,8 @@ for i in list_ID:
             if debug:
                 print 'InvalidDataException: ', e.value, " Number: ", e.count
         last_time=x['time']
-        if len(tracks) >1 and True:
+        if len(tracks) >1 and False:
             break
-    #print max_force
-
 
 with open("out.json","w") as f:
     json.dump(meta, f)
