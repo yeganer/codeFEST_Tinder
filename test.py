@@ -4,6 +4,7 @@ import numpy as np
 import time as t
 
 from random import random
+from random import randint
 
 from ContData import *
 from TrackData import TrackData
@@ -22,19 +23,31 @@ conf = {
         }
 query = "SELECT speed, speed_GPS, brlt, belt, stwa, ftgs, Node_Time from hackathon WHERE Track_VehicleID='{id}' ORDER BY NODE_TIME"# LIMIT {limit};"
 
+
+
+
 db = DBLink(conf)
 meta = {}
 for i in list_ID:
     db.query(query.format(id=i, limit=10))
     meta[i] = []
 
+    speed_lim_cycle = 10;
+    curr_speed_lim_cycle = 1;
+    prev_speed_lim = randint(20, 160);
     last_time=None
     max_force=None
     tracks = []
     tracks.append(TrackData())
     for x in db.fetch():
-        x['speed_lim']=200;
-        x['vehicle_dist']=200;
+        if curr_speed_lim_cycle == speed_lim_cycle:
+            prev_speed_lim = randint(40, 140);
+            curr_speed_lim_cycle = 1;
+            speed_lim_cycle = (40, 100);
+        else:
+            curr_speed_lim_cycle += 1
+        x['speed_lim'] = prev_speed_lim;
+        x['vehicle_dist']=randint(1,50);
         x['time'] = t.mktime(t.strptime(x["Node_Time"],"%Y-%m-%d %H:%M:%S"))
         #print time
         if not last_time:
