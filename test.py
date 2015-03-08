@@ -70,7 +70,7 @@ for i in list_ID:
             if debug:
                 print 'InvalidDataException: ', e.value, " Number: ", e.count
         last_time=x['time']
-        if len(tracks) >10 and False:
+        if len(tracks) >1 and True:
             break
 
 with open("out.json","w") as f:
