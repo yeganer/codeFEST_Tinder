@@ -3,7 +3,7 @@ import json
 import numpy as np
 import time as t
 
-from random import random
+from random import random,gauss
 from random import randint
 
 from ContData import *
@@ -13,7 +13,8 @@ from mysql import DBLink
 
 debug=False
 
-list_ID = [101]#,102,103,104,105,106,107,108]
+list_ID = [101,102,103,104,105,106,107,108]
+list_ID = [101]
 
 conf = {
         'ip': '138.246.40.44',
@@ -43,11 +44,11 @@ for i in list_ID:
         if curr_speed_lim_cycle == speed_lim_cycle:
             prev_speed_lim = randint(40, 140);
             curr_speed_lim_cycle = 1;
-            speed_lim_cycle = (40, 100);
+            speed_lim_cycle = randint(2, 10);
         else:
             curr_speed_lim_cycle += 1
         x['speed_lim'] = prev_speed_lim;
-        x['vehicle_dist']=randint(1,50);
+        x['vehicle_dist']=gauss(x['speed']/2+10,15);
         x['time'] = t.mktime(t.strptime(x["Node_Time"],"%Y-%m-%d %H:%M:%S"))
         if randint(1,100) == 23:
             x['ftgs'] = True
@@ -63,12 +64,8 @@ for i in list_ID:
                 meta[i].append(result)
                 if not max_force:
                     max_force =0
-                if result['force'][2]>max_force:
-                    #print(len(tracks))
-                    max_force=result['force'][2]
-                #print result['max_force'], ' ', result['avg_force'], ' ', result['var_force']
-                #print result['score']
-            #print len(tracks)
+                if result['force']['max']>max_force:
+                    max_force=result['force']['max']
             tracks.append(TrackData())
         try:
             tracks[-1].add_data_point(ContData(x))
@@ -76,9 +73,8 @@ for i in list_ID:
             if debug:
                 print 'InvalidDataException: ', e.value, " Number: ", e.count
         last_time=x['time']
-        if len(tracks) >1 and True:
+        if len(tracks) >10 and True:
             break
-    #print max_force
 
 with open("out.json","w") as f:
     json.dump(meta, f)
