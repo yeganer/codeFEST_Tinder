@@ -46,6 +46,11 @@ for i in list_ID:
             curr_speed_lim_cycle += 1
         x['speed_lim'] = prev_speed_lim;
         x['time'] = t.mktime(t.strptime(x["Node_Time"],"%Y-%m-%d %H:%M:%S"))
+        if randint(1,100) == 23:
+            x['ftgs'] = True
+        else:
+            x['ftgs'] = False
+        #print time
         if not last_time:
             last_time=x['time']
         if np.abs(x['time']-last_time) > 1800 and len(tracks[-1].data)>1:
