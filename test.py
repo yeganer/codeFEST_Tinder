@@ -14,7 +14,6 @@ from mysql import DBLink
 debug=False
 
 list_ID = [101,102,103,104,105,106,107,108]
-list_ID = [101]
 
 conf = {
         'ip': '138.246.40.44',
@@ -23,8 +22,6 @@ conf = {
         'db': 'codefest',
         }
 query = "SELECT speed, speed_GPS, brlt, belt, stwa, ftgs, Node_Time from hackathon WHERE Track_VehicleID='{id}' ORDER BY NODE_TIME"# LIMIT {limit};"
-
-
 
 
 db = DBLink(conf)
@@ -48,7 +45,6 @@ for i in list_ID:
         else:
             curr_speed_lim_cycle += 1
         x['speed_lim'] = prev_speed_lim;
-        x['vehicle_dist']=gauss(x['speed']/2+10,15);
         x['time'] = t.mktime(t.strptime(x["Node_Time"],"%Y-%m-%d %H:%M:%S"))
         if not last_time:
             last_time=x['time']
