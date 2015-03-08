@@ -3,13 +3,14 @@ import json
 import numpy as np
 import time as t
 
-from random import random,gauss
+from random import random,gauss,seed
 from random import randint
 
 from ContData import *
 from TrackData import TrackData
 from mysql import DBLink
 
+seed(1337)
 
 debug=False
 
@@ -69,7 +70,7 @@ for i in list_ID:
             if debug:
                 print 'InvalidDataException: ', e.value, " Number: ", e.count
         last_time=x['time']
-        if len(tracks) >10 and True:
+        if len(tracks) >10 and False:
             break
 
 with open("out.json","w") as f:

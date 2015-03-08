@@ -39,6 +39,10 @@ class TrackData:
     def update(self):
         if len(self.data)>2:
             self.score={}
+
+            times = [x.time for x in self.data]
+            self.duration=np.max(times) - np.min(times)
+
             lspeed = [x.speed for x in self.data]
             self.v = {
                     'avg' : np.mean(lspeed),
@@ -48,11 +52,8 @@ class TrackData:
             self.acc = np.mean([np.abs(lspeed[i] - lspeed[i+1]) for i in xrange(len(lspeed)-1)])
 
             self.score['limit'] = 1-np.mean([1 if x.speed>x.speed_lim else 0 for x in self.data])
-            self.score['sleep'] = 1-np.mean([1 if x.ftgs else 0 for x in self.data])
+            self.score['sleep'] = math.exp(-len([1 for x in self.data if x.ftgs])/(self.duration / 60./5))
             self.score['distance'] = np.mean([1 if x.vehicle_dist>x.speed/2. else 0 for x in self.data])
-
-            times = [x.time for x in self.data]
-            self.duration=np.max(times) - np.min(times)
 
             self.max_angle=np.max([np.abs(x.stwa) for x in self.data])
 
@@ -94,9 +95,14 @@ class TrackData:
                     self.score['distance'],
                     self.score['sleep'],
                     ),
-                weights=(1,1,1,1)
+                weights=(
+                    2,
+                    1,
+                    3,
+                    4
+                    )
                 )
-        print 'total: ', self.score['total']
+        #print 'total: ', self.score['total']
 
     def export(self):
         if not self.error:
