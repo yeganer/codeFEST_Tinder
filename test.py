@@ -35,7 +35,6 @@ for i in list_ID:
     curr_speed_lim_cycle = 1;
     prev_speed_lim = randint(20, 160);
     last_time=None
-    max_force=None
     tracks = []
     tracks.append(TrackData())
     for x in db.fetch():
@@ -57,12 +56,8 @@ for i in list_ID:
         if np.abs(x['time']-last_time) > 1800 and len(tracks[-1].data)>1:
             tracks[-1].end_track()
             result = tracks[-1].export()
-            if result:
+            if result and result['force']['max']>400000:
                 meta[i].append(result)
-                if not max_force:
-                    max_force =0
-                if result['force']['max']>max_force:
-                    max_force=result['force']['max']
             tracks.append(TrackData())
         try:
             tracks[-1].add_data_point(ContData(x))
@@ -70,7 +65,7 @@ for i in list_ID:
             if debug:
                 print 'InvalidDataException: ', e.value, " Number: ", e.count
         last_time=x['time']
-        if len(tracks) >1 and True:
+        if len(tracks) >1 and False:
             break
 
 with open("out.json","w") as f:

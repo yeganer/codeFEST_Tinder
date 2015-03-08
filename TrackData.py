@@ -42,6 +42,10 @@ class TrackData:
 
             times = [x.time for x in self.data]
             self.duration=np.max(times) - np.min(times)
+            self.time = {
+                    'start':self.data[0].time,
+                    'end':self.data[-1].time
+                    }
 
             lspeed = [x.speed for x in self.data]
             self.v = {
@@ -58,7 +62,7 @@ class TrackData:
             self.max_angle=np.max([np.abs(x.stwa) for x in self.data])
 
             l_force = [np.abs(x.force) for x in self.data]
-            self.score['force'] = math.exp(-len([1 for x in self.data if np.abs(x.force) > 300000 ])/5.)
+            self.score['force'] = math.exp(-np.sum([np.abs(x.force/300000.) for x in self.data if np.abs(x.force) > 300000 ])/10.)
             #self.p_force = [x]
 #            self.max_force=np.max(l_force)
 #            self.force_avg=np.mean(l_force)
@@ -112,6 +116,7 @@ class TrackData:
                     'duration':self.duration,
                     'angle':self.max_angle,
                     'force':self.force,
+                    'time':self.time,
                     'belt':self.p_belt,}
         else:
             return None
